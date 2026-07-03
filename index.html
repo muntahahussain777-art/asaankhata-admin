@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src https://*.supabase.co wss://*.supabase.co; img-src 'self' data:;" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>AsaanKhata VIP Admin</title>
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+
+  <!-- ── First-time setup ─────────────────────────────────────── -->
+  <div id="setup-screen" class="auth-wrap hidden">
+    <div class="auth-card">
+      <h1>⚙ AsaanKhata Admin Setup</h1>
+      <p class="sub">Sirf aap ke browser mein save — GitHub par PIN mat daalein.</p>
+      <form id="setup-form">
+        <div class="field">
+          <label>Supabase URL</label>
+          <input id="setup-url" type="url" required placeholder="https://xxx.supabase.co" />
+        </div>
+        <div class="field">
+          <label>Supabase Anon Key</label>
+          <input id="setup-key" type="password" required autocomplete="new-password" />
+        </div>
+        <div class="field">
+          <label>Admin PIN (min 6) — mobile admin jaisa</label>
+          <input id="setup-pin" type="password" required minlength="6" autocomplete="new-password" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Save &amp; Enter</button>
+        <p id="setup-err" class="err"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Login ──────────────────────────────────────────────── -->
+  <div id="auth-screen" class="auth-wrap hidden">
+    <div class="auth-card">
+      <h1>🔐 AsaanKhata Admin</h1>
+      <p class="sub">VIP Control Panel — Supabase connected</p>
+      <form id="login-form">
+        <div class="field">
+          <label>Admin PIN</label>
+          <input id="login-pin" type="password" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn btn-gold btn-block">Login</button>
+        <p id="login-err" class="err"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Main app ───────────────────────────────────────────── -->
+  <div id="app-screen" class="shell hidden">
+    <aside id="sidebar" class="sidebar">
+      <div class="brand">
+        <h2>AsaanKhata</h2>
+        <span>VIP Admin Panel</span>
+      </div>
+      <nav class="nav">
+        <button type="button" data-nav="dashboard" class="active">📊 Dashboard</button>
+        <button type="button" data-nav="users">👥 Users &amp; Plans</button>
+        <button type="button" data-nav="pending">💳 Pending Payments</button>
+        <button type="button" data-nav="play">▶ Google Play</button>
+        <button type="button" data-nav="trial">🎁 PRO Trial</button>
+        <button type="button" data-nav="ads">📢 Ads Control</button>
+        <button type="button" data-nav="ai">🤖 AI Config</button>
+        <button type="button" data-nav="otp">📱 OTP Policy</button>
+        <button type="button" data-nav="youtube">▶ YouTube Help</button>
+        <button type="button" data-nav="notifications">🔔 Notifications</button>
+      </nav>
+      <div class="foot">
+        <button type="button" id="btn-logout" class="btn btn-ghost btn-block">Logout</button>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <button type="button" id="menu-toggle" class="menu-btn">☰ Menu</button>
+        <div class="search-box">
+          <input id="global-search" type="search" placeholder="Phone, naam, business search..." />
+        </div>
+        <button type="button" id="btn-refresh" class="btn btn-primary">↻ Refresh</button>
+      </header>
+
+      <div class="content">
+        <!-- Dashboard -->
+        <div data-section="dashboard">
+          <div class="stats">
+            <div class="stat"><div class="n" id="stat-total">0</div><div class="l">Total Users</div></div>
+            <div class="stat"><div class="n" id="stat-pro">0</div><div class="l">Active Pro</div></div>
+            <div class="stat"><div class="n" id="stat-free">0</div><div class="l">Free</div></div>
+          </div>
+          <div class="panel">
+            <h3>Quick Guide</h3>
+            <p style="color:var(--muted);font-size:0.9rem">
+              <strong>Users:</strong> Pro / Pro+ / Enterprise assign karein — same phone ke sab karobar update honge.<br>
+              <strong>Pending:</strong> Easypaisa WhatsApp payments approve karein.<br>
+              <strong>AI / Ads / OTP:</strong> App mein turant reflect — users ko sync chahiye.<br>
+              <strong>Security:</strong> PIN sirf is browser mein hash form mein — 5 galat try = 15 min lock.
+            </p>
+          </div>
+        </div>
+
+        <!-- Users -->
+        <div data-section="users" class="hidden">
+          <div class="panel">
+            <h3>All Users (phone grouped)</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Phone</th><th>Business</th><th>Plan</th><th>Entries</th><th></th></tr>
+                </thead>
+                <tbody id="users-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pending -->
+        <div data-section="pending" class="hidden">
+          <div class="panel">
+            <h3>Pending Easypaisa Subscriptions</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Phone</th><th>Package</th><th>Trx ID</th><th>Date</th><th></th></tr></thead>
+                <tbody id="pending-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Google Play -->
+        <div data-section="play" class="hidden">
+          <div class="panel">
+            <h3>Google Play Purchases (last 100)</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Phone</th><th>Plan</th><th>Product</th><th>Expires</th></tr></thead>
+                <tbody id="play-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trial -->
+        <div data-section="trial" class="hidden">
+          <div class="panel">
+            <h3>PRO Trial Campaign</h3>
+            <label class="toggle"><input type="checkbox" id="trial-active" /> Campaign ON</label>
+            <div class="field"><label>Duration (hours)</label><input type="number" id="trial-hours" value="24" min="1" /></div>
+            <div class="field"><label>Audience</label>
+              <select id="trial-audience">
+                <option value="BOTH_ALL_USERS">All Users</option>
+                <option value="NEW_USERS_ONLY">New Users Only</option>
+                <option value="OLD_USERS_ONLY">Old Users Only</option>
+              </select>
+            </div>
+            <p id="trial-started" class="muted" style="font-size:0.85rem"></p>
+            <button type="button" id="save-trial" class="btn btn-primary">Save Trial</button>
+          </div>
+        </div>
+
+        <!-- Ads -->
+        <div data-section="ads" class="hidden">
+          <div class="panel">
+            <h3>Remote Ads Banner</h3>
+            <label class="toggle"><input type="checkbox" id="ads-enabled" /> Ads ON</label>
+            <div class="field"><label>Link URL</label><input id="ads-link" type="url" /></div>
+            <div class="field"><label>Title</label><input id="ads-title" /></div>
+            <div class="field"><label>Description</label><textarea id="ads-desc"></textarea></div>
+            <button type="button" id="save-ads" class="btn btn-primary">Save Ads</button>
+          </div>
+        </div>
+
+        <!-- AI -->
+        <div data-section="ai" class="hidden">
+          <div class="panel">
+            <h3>AI Connector</h3>
+            <label class="toggle"><input type="checkbox" id="ai-enabled" /> AI ON</label>
+            <div class="grid2">
+              <div class="field"><label>Provider</label>
+                <select id="ai-provider">
+                  <option value="offline_local">Offline Local</option>
+                  <option value="google_gemini">Google Gemini</option>
+                  <option value="openai">OpenAI</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </div>
+              <div class="field"><label>Model</label><input id="ai-model" /></div>
+            </div>
+            <div class="field"><label>API Key</label><input id="ai-key" type="password" autocomplete="off" /></div>
+            <label class="toggle"><input type="checkbox" id="ai-free-limit" checked /> Free limited access</label>
+            <div class="field"><label>Free daily limit</label><input type="number" id="ai-daily" value="10" min="0" /></div>
+            <label class="toggle"><input type="checkbox" id="ai-pro-full" checked /> Pro full access</label>
+            <button type="button" id="save-ai" class="btn btn-primary">Save AI Config</button>
+          </div>
+        </div>
+
+        <!-- OTP -->
+        <div data-section="otp" class="hidden">
+          <div class="panel">
+            <h3>OTP Verification (Global)</h3>
+            <label class="toggle"><input type="checkbox" id="otp-enabled" checked /> OTP required on login</label>
+            <button type="button" id="save-otp" class="btn btn-primary">Save OTP Policy</button>
+          </div>
+        </div>
+
+        <!-- YouTube -->
+        <div data-section="youtube" class="hidden">
+          <div class="panel">
+            <h3>YouTube Help Links</h3>
+            <div id="youtube-fields"></div>
+            <button type="button" id="save-youtube" class="btn btn-primary">Save All Links</button>
+          </div>
+        </div>
+
+        <!-- Notifications -->
+        <div data-section="notifications" class="hidden">
+          <div class="panel">
+            <h3>Broadcast Notifications</h3>
+            <div class="field"><label>Title</label><input id="notif-title" /></div>
+            <div class="field"><label>Message</label><textarea id="notif-msg"></textarea></div>
+            <button type="button" id="add-notif" class="btn btn-primary">Create Notification</button>
+          </div>
+          <div id="notif-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal-overlay" class="overlay hidden">
+    <div class="modal">
+      <h3 id="modal-title">Manage User</h3>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
