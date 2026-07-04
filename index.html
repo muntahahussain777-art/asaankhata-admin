@@ -6,11 +6,252 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src https://*.supabase.co wss://*.supabase.co; img-src 'self' data:;" />
   <meta name="robots" content="noindex, nofollow" />
   <title>AsaanKhata VIP Admin</title>
-  <link rel="stylesheet" href="admin.css" />
+  <style>
+:root {
+  --bg: #0f1419;
+  --surface: #1a2332;
+  --surface2: #243044;
+  --border: #2d3f56;
+  --text: #e8eef5;
+  --muted: #8fa3b8;
+  --accent: #22c55e;
+  --accent2: #16a34a;
+  --gold: #fbbf24;
+  --danger: #ef4444;
+  --warn: #f59e0b;
+  --pro: #3b82f6;
+  --proplus: #8b5cf6;
+  --enterprise: #f59e0b;
+  --radius: 12px;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+.hidden { display: none !important; }
+.auth-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(ellipse at top, #1a3d2e 0%, var(--bg) 55%);
+}
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+.auth-card h1 {
+  margin: 0 0 6px;
+  font-size: 1.5rem;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.auth-card .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 22px; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
+.field input, .field select, .field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+.field textarea { min-height: 80px; resize: vertical; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: transform 0.1s, opacity 0.15s;
+}
+.btn:active { transform: scale(0.98); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #052e16; }
+.btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-gold { background: linear-gradient(135deg, var(--gold), #d97706); color: #1a1200; }
+.btn-block { width: 100%; }
+.btn-sm { padding: 6px 10px; font-size: 0.78rem; }
+.err { color: #fca5a5; font-size: 0.85rem; margin-top: 8px; }
+.ok { color: #86efac; font-size: 0.85rem; margin-top: 8px; }
+.muted { color: var(--muted); }
+.shell { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 260px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.sidebar .brand {
+  padding: 20px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar .brand h2 { margin: 0; font-size: 1.1rem; }
+.sidebar .brand span { font-size: 0.75rem; color: var(--muted); }
+.nav { flex: 1; overflow-y: auto; padding: 12px 10px; }
+.nav button {
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+.nav button:hover { background: var(--surface2); color: var(--text); }
+.nav button.active { background: rgba(34, 197, 94, 0.15); color: var(--accent); }
+.sidebar .foot { padding: 12px; border-top: 1px solid var(--border); }
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.topbar {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  background: var(--surface);
+}
+.search-box {
+  flex: 1;
+  min-width: 200px;
+  position: relative;
+}
+.search-box input {
+  width: 100%;
+  padding: 10px 12px 10px 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+}
+.search-box::before {
+  content: "🔍";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.85rem;
+}
+.content { padding: 20px; overflow-y: auto; flex: 1; }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.stat .n { font-size: 1.75rem; font-weight: 800; }
+.stat .l { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.panel h3 { margin: 0 0 14px; font-size: 1rem; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } }
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.badge-pro { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+.badge-proplus { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; }
+.badge-enterprise { background: rgba(245, 158, 11, 0.2); color: #fcd34d; }
+.badge-free { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--border); }
+th { color: var(--muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+.table-wrap { overflow-x: auto; }
+.toggle { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.toggle input { width: 44px; height: 24px; accent-color: var(--accent); }
+.overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; padding: 16px;
+}
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+  max-width: 520px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal h3 { margin-top: 0; }
+.modal-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+.menu-btn {
+  display: none;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.2s;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .menu-btn { display: inline-flex; }
+}
+.toast {
+  position: fixed; bottom: 20px; right: 20px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 12px 18px;
+  border-radius: 10px;
+  z-index: 200;
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.2s;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } }
+  </style>
 </head>
 <body>
 
-  <!-- ── First-time setup ─────────────────────────────────────── -->
+  <!-- First-time setup -->
   <div id="setup-screen" class="auth-wrap hidden">
     <div class="auth-card">
       <h1>⚙ AsaanKhata Admin Setup</h1>
@@ -34,7 +275,7 @@
     </div>
   </div>
 
-  <!-- ── Login ──────────────────────────────────────────────── -->
+  <!-- Login -->
   <div id="auth-screen" class="auth-wrap hidden">
     <div class="auth-card">
       <h1>🔐 AsaanKhata Admin</h1>
@@ -50,7 +291,7 @@
     </div>
   </div>
 
-  <!-- ── Main app ───────────────────────────────────────────── -->
+  <!-- Main app -->
   <div id="app-screen" class="shell hidden">
     <aside id="sidebar" class="sidebar">
       <div class="brand">
@@ -63,6 +304,7 @@
         <button type="button" data-nav="pending">💳 Pending Payments</button>
         <button type="button" data-nav="play">▶ Google Play</button>
         <button type="button" data-nav="trial">🎁 PRO Trial</button>
+        <button type="button" data-nav="referrals">🎟️ VIP Referral</button>
         <button type="button" data-nav="ads">📢 Ads Control</button>
         <button type="button" data-nav="ai">🤖 AI Config</button>
         <button type="button" data-nav="otp">📱 OTP Policy</button>
@@ -161,6 +403,44 @@
           </div>
         </div>
 
+        <!-- Referrals -->
+        <div data-section="referrals" class="hidden">
+          <div class="panel">
+            <h3>VIP Referral Program</h3>
+            <p class="muted" style="font-size:0.85rem;margin-bottom:12px">
+              Har user ka code app mein auto banta hai. Dost code enter kare → dono ko 5 din Pro.
+            </p>
+            <label class="toggle"><input type="checkbox" id="referral-enabled" checked /> Referral Program ON</label>
+            <button type="button" id="save-referral-config" class="btn btn-primary" style="margin-top:12px">Save</button>
+          </div>
+          <div class="panel">
+            <h3>Manual Code (phone se)</h3>
+            <div class="grid2">
+              <div class="field"><label>Phone</label><input id="referral-phone" placeholder="03XXXXXXXXX" /></div>
+              <div class="field"><label>Custom Code (optional)</label><input id="referral-custom-code" placeholder="AK-XXXXXX" /></div>
+            </div>
+            <button type="button" id="referral-create-btn" class="btn btn-gold">Create / Fix Code</button>
+          </div>
+          <div class="panel">
+            <h3>Referral Codes <span id="referral-code-count" class="muted"></span></h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Code</th><th>Phone</th><th>Business</th><th>Uses</th><th>Status</th><th></th></tr></thead>
+                <tbody id="referral-codes-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel">
+            <h3>Recent Redemptions</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Code</th><th>Redeemer Phone</th><th>Days</th><th>Date</th></tr></thead>
+                <tbody id="referral-redemptions-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
         <!-- Ads -->
         <div data-section="ads" class="hidden">
           <div class="panel">
@@ -238,8 +518,726 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="auth.js"></script>
-  <script src="api.js"></script>
-  <script src="app.js"></script>
+  <script>
+/* ===== AUTH ===== */
+const AUTH_KEY = 'ak_admin_auth_v2';
+const LOCK_KEY = 'ak_admin_lock_v2';
+const MAX_FAIL = 5;
+const LOCK_MS = 15 * 60 * 1000;
+const SESSION_MS = 2 * 60 * 60 * 1000;
+
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+function getAuth() {
+  try { return JSON.parse(localStorage.getItem(AUTH_KEY) || 'null'); } catch { return null; }
+}
+function saveAuth(data) { localStorage.setItem(AUTH_KEY, JSON.stringify(data)); }
+function clearAuth() { localStorage.removeItem(AUTH_KEY); }
+function isLocked() {
+  const lock = JSON.parse(localStorage.getItem(LOCK_KEY) || 'null');
+  if (!lock?.until) return false;
+  if (Date.now() < lock.until) return lock;
+  localStorage.removeItem(LOCK_KEY);
+  return false;
+}
+function recordFail() {
+  const lock = JSON.parse(localStorage.getItem(LOCK_KEY) || '{"count":0}');
+  lock.count = (lock.count || 0) + 1;
+  if (lock.count >= MAX_FAIL) { lock.until = Date.now() + LOCK_MS; lock.count = 0; }
+  localStorage.setItem(LOCK_KEY, JSON.stringify(lock));
+}
+function clearFails() { localStorage.removeItem(LOCK_KEY); }
+function isSessionValid() {
+  const a = getAuth();
+  if (!a?.pinHash || !a?.url || !a?.anonKey) return false;
+  if (!a.sessionUntil || Date.now() > a.sessionUntil) return false;
+  return true;
+}
+async function setupAdmin(url, anonKey, pin) {
+  if (!url?.startsWith('https://') || !anonKey || pin.length < 6) {
+    throw new Error('URL, anon key aur PIN (min 6) zaroori hain.');
+  }
+  const pinHash = await sha256(pin.trim());
+  saveAuth({ url: url.trim(), anonKey: anonKey.trim(), pinHash, sessionUntil: Date.now() + SESSION_MS, createdAt: Date.now() });
+  clearFails();
+}
+async function loginPin(pin) {
+  const lock = isLocked();
+  if (lock) {
+    const mins = Math.ceil((lock.until - Date.now()) / 60000);
+    throw new Error(`Locked — ${mins} min baad try karein.`);
+  }
+  const a = getAuth();
+  if (!a?.pinHash) throw new Error('Pehle setup karein.');
+  const hash = await sha256(pin.trim());
+  if (hash !== a.pinHash) { recordFail(); throw new Error('Galat PIN.'); }
+  a.sessionUntil = Date.now() + SESSION_MS;
+  saveAuth(a);
+  clearFails();
+}
+async function verifyPin(pin) {
+  const a = getAuth();
+  if (!a?.pinHash) return false;
+  return (await sha256(pin.trim())) === a.pinHash;
+}
+function touchSession() {
+  const a = getAuth();
+  if (!a) return;
+  a.sessionUntil = Date.now() + SESSION_MS;
+  saveAuth(a);
+}
+function logout() {
+  const a = getAuth();
+  if (a) { a.sessionUntil = 0; saveAuth(a); }
+}
+window.AdminAuth = { sha256, getAuth, saveAuth, clearAuth, isLocked, isSessionValid, setupAdmin, loginPin, verifyPin, touchSession, logout };
+
+/* ===== API ===== */
+let _client = null;
+function client() {
+  if (!_client) throw new Error('Supabase not connected');
+  return _client;
+}
+function initSupabase(url, anonKey) {
+  _client = window.supabase.createClient(url, anonKey, { auth: { persistSession: false, autoRefreshToken: false } });
+  return _client;
+}
+function normPhone(p) { return (p || '').replace(/\D/g, ''); }
+const COUNT_TABLES = ['customers', 'products', 'sales', 'expenses', 'ledger_entries', 'stock_movements'];
+const TABLE_LABELS = { customers: 'Customers', products: 'Products', sales: 'Sales', expenses: 'Expenses', ledger_entries: 'Ledger', stock_movements: 'Stock' };
+async function fetchRevokedIds() {
+  try {
+    const { data } = await client().from('account_revocations').select('business_id');
+    return new Set((data || []).map((r) => r.business_id));
+  } catch { return new Set(); }
+}
+async function selectAllBusinessIds(table) {
+  const out = [];
+  let start = 0;
+  const page = 1000;
+  while (true) {
+    const { data, error } = await client().from(table).select('business_id').range(start, start + page - 1);
+    if (error) break;
+    if (!data?.length) break;
+    out.push(...data);
+    if (data.length < page) break;
+    start += page;
+  }
+  return out;
+}
+async function fetchEntryCounts() {
+  const result = {};
+  for (const table of COUNT_TABLES) {
+    try {
+      const rows = await selectAllBusinessIds(table);
+      for (const row of rows) {
+        const id = row.business_id || '';
+        if (!id) continue;
+        if (!result[id]) result[id] = {};
+        result[id][table] = (result[id][table] || 0) + 1;
+      }
+    } catch (_) {}
+  }
+  return result;
+}
+async function fetchAllBusinesses() {
+  const revoked = await fetchRevokedIds();
+  const { data: bizRows, error } = await client().from('businesses').select('id, phone, name, type, created_at, plan_type').order('created_at', { ascending: false });
+  if (error) throw error;
+  const { data: subRows } = await client().from('pro_subscriptions').select('business_id, pro_expires_at');
+  const subMap = {};
+  for (const r of subRows || []) { if (r.pro_expires_at) subMap[r.business_id] = r.pro_expires_at; }
+  const counts = await fetchEntryCounts();
+  return (bizRows || []).filter((r) => !revoked.has(r.id)).map((r) => ({
+    ...r,
+    pro_expires_at: subMap[r.id] || null,
+    entryCounts: counts[r.id] || {},
+    totalEntries: Object.values(counts[r.id] || {}).reduce((a, b) => a + b, 0),
+  }));
+}
+async function fetchStats() {
+  const businesses = await fetchAllBusinesses();
+  const now = new Date().toISOString();
+  const { count } = await client().from('pro_subscriptions').select('business_id', { count: 'exact', head: true }).gt('pro_expires_at', now);
+  return { totalUsers: businesses.length, proUsers: count || 0, freeUsers: businesses.length - (count || 0) };
+}
+async function businessIdsForPhone(phone) {
+  const target = normPhone(phone);
+  const { data } = await client().from('businesses').select('id, phone');
+  return (data || []).filter((r) => normPhone(r.phone) === target).map((r) => r.id);
+}
+async function assignPlanTier(phone, tier, expiresAt, notes = '') {
+  const planType = { pro: 'Pro', proplus: 'Pro+', enterprise: 'Enterprise', free: 'free' }[tier] || tier;
+  const ids = await businessIdsForPhone(phone);
+  const exp = expiresAt.toISOString();
+  for (const id of ids) {
+    await client().from('businesses').update({ plan_type: planType }).eq('id', id);
+    if (planType === 'free') {
+      const yesterday = new Date(Date.now() - 86400000).toISOString();
+      await client().from('pro_subscriptions').upsert({ business_id: id, pro_expires_at: yesterday, activated_by: 'admin', activated_at: new Date().toISOString(), notes: 'Revoked by admin' });
+    } else {
+      await client().from('pro_subscriptions').upsert({ business_id: id, pro_expires_at: exp, activated_by: 'admin', activated_at: new Date().toISOString(), notes: notes || tier });
+    }
+  }
+  return ids.length;
+}
+async function deleteAccount(businessId, phone) {
+  const ids = new Set([businessId]);
+  const same = await businessIdsForPhone(phone);
+  same.forEach((id) => ids.add(id));
+  const childTables = ['expenses', 'payments', 'supplier_payments', 'ledger_entries', 'purchase_items', 'purchases', 'sale_items', 'sales', 'stock_movements', 'products', 'suppliers', 'customers'];
+  for (const id of ids) {
+    let ph = phone;
+    if (!ph) {
+      const { data } = await client().from('businesses').select('phone').eq('id', id).maybeSingle();
+      ph = data?.phone || '';
+    }
+    await client().from('account_revocations').upsert({ business_id: id, phone: ph, revoked_at: new Date().toISOString(), revoked_by: 'admin' });
+    for (const table of childTables) {
+      try { await client().from(table).delete().eq('business_id', id); } catch (_) {}
+    }
+    try { await client().from('pro_subscriptions').delete().eq('business_id', id); } catch (_) {}
+    await client().from('businesses').delete().eq('id', id);
+  }
+  return ids.size;
+}
+async function getAppConfig(keys) {
+  const { data } = await client().from('app_config').select('key, value').in('key', keys);
+  const map = {};
+  for (const r of data || []) map[r.key] = r.value ?? '';
+  return map;
+}
+async function setAppConfig(entries) {
+  const now = new Date().toISOString();
+  for (const [key, value] of Object.entries(entries)) {
+    await client().from('app_config').upsert({ key, value: String(value), updated_at: now });
+  }
+}
+async function fetchAdConfig() {
+  const m = await getAppConfig(['ads_enabled', 'ads_link', 'ads_title', 'ads_description']);
+  return { enabled: m.ads_enabled === 'true', link: m.ads_link || '', title: m.ads_title || '', description: m.ads_description || '' };
+}
+async function fetchAiConfig() {
+  const m = await getAppConfig(['ai_enabled', 'ai_provider', 'ai_model', 'ai_api_key', 'ai_free_limited_access', 'ai_free_daily_limit', 'ai_pro_full_access']);
+  return {
+    enabled: m.ai_enabled === 'true',
+    provider: m.ai_provider || 'offline_local',
+    model: m.ai_model || 'local-smart-rules',
+    apiKey: m.ai_api_key || '',
+    freeLimited: m.ai_free_limited_access !== 'false',
+    freeDailyLimit: parseInt(m.ai_free_daily_limit, 10) || 10,
+    proFullAccess: m.ai_pro_full_access !== 'false',
+  };
+}
+async function fetchOtpPolicy() {
+  const m = await getAppConfig(['otp_verification_enabled']);
+  return m.otp_verification_enabled !== 'false';
+}
+async function fetchTrialConfig() {
+  const m = await getAppConfig(['trial_campaign_active', 'trial_duration_hours', 'trial_target_audience', 'trial_campaign_started_at']);
+  return {
+    active: m.trial_campaign_active === 'true',
+    hours: parseInt(m.trial_duration_hours, 10) || 24,
+    audience: m.trial_target_audience || 'BOTH_ALL_USERS',
+    startedAt: m.trial_campaign_started_at || '',
+  };
+}
+async function fetchReferralConfig() {
+  const m = await getAppConfig(['referral_program_enabled']);
+  return { enabled: m.referral_program_enabled !== 'false' };
+}
+async function saveReferralConfig(enabled) {
+  await setAppConfig({ referral_program_enabled: enabled });
+}
+function genReferralCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s = 'AK-';
+  for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random() * chars.length)];
+  return s;
+}
+async function fetchReferralCodes() {
+  const { data, error } = await client().from('referral_codes').select('*').order('created_at', { ascending: false }).limit(200);
+  if (error) throw error;
+  const codes = data || [];
+  const { data: reds } = await client().from('referral_redemptions').select('code');
+  const useMap = {};
+  for (const r of reds || []) { useMap[r.code] = (useMap[r.code] || 0) + 1; }
+  const bizIds = [...new Set(codes.map((c) => c.business_id))];
+  const bizMap = {};
+  if (bizIds.length) {
+    const { data: biz } = await client().from('businesses').select('id, name, phone').in('id', bizIds);
+    for (const b of biz || []) bizMap[b.id] = b;
+  }
+  return codes.map((c) => ({
+    ...c,
+    uses: useMap[c.code] || 0,
+    business: bizMap[c.business_id] || null,
+  }));
+}
+async function fetchReferralRedemptions() {
+  const { data, error } = await client().from('referral_redemptions').select('*').order('redeemed_at', { ascending: false }).limit(100);
+  if (error) throw error;
+  return data || [];
+}
+async function setReferralCodeActive(code, active) {
+  await client().from('referral_codes').update({ is_active: active }).eq('code', code);
+}
+async function createReferralForPhone(phone, customCode) {
+  const ids = await businessIdsForPhone(phone);
+  if (!ids.length) throw new Error('Is phone par koi business nahi mila');
+  const bizId = ids[0];
+  const { data: existing } = await client().from('referral_codes').select('code').eq('business_id', bizId).maybeSingle();
+  if (existing) return existing.code;
+  const code = (customCode || '').trim().toUpperCase() || genReferralCode();
+  await client().from('referral_codes').insert({
+    business_id: bizId,
+    referrer_phone: phone,
+    code,
+    is_active: true,
+  });
+  return code;
+}
+const YT_KEYS = ['dashboard', 'khata', 'stock', 'sales', 'new_sale', 'expenses', 'reports', 'due_list', 'customer', 'business_setup', 'reminders'];
+async function fetchYoutubeLinks() {
+  const keys = YT_KEYS.map((k) => `youtube_link_${k}`);
+  const m = await getAppConfig(keys);
+  const out = {};
+  for (const k of YT_KEYS) out[k] = m[`youtube_link_${k}`] || '';
+  return out;
+}
+async function saveYoutubeLinks(links) {
+  const entries = {};
+  for (const [k, v] of Object.entries(links)) { entries[`youtube_link_${k}`] = v; }
+  await setAppConfig(entries);
+}
+async function fetchNotifications() {
+  const { data, error } = await client().from('notifications').select('*').order('created_at', { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+async function createNotification(title, message) {
+  await client().from('notifications').insert({ title, message, is_active: true });
+}
+async function updateNotification(id, title, message, isActive) {
+  await client().from('notifications').update({ title, message, is_active: isActive, updated_at: new Date().toISOString() }).eq('id', id);
+}
+async function deleteNotification(id) {
+  await client().from('notifications').delete().eq('id', id);
+}
+async function fetchPendingSubs() {
+  const { data, error } = await client().from('pending_subscriptions').select('*').order('created_at', { ascending: false });
+  if (error) return [];
+  return data || [];
+}
+async function approvePendingSub(row, months = 1) {
+  const tier = row.package_type === 'enterprise' ? 'enterprise' : 'pro';
+  const exp = new Date();
+  exp.setMonth(exp.getMonth() + months);
+  await assignPlanTier(row.phone_number, tier, exp, `Easypaisa ${row.trx_id}`);
+  await client().from('pending_subscriptions').delete().eq('id', row.id);
+}
+async function fetchGooglePlayPurchases() {
+  const { data, error } = await client().from('google_play_purchases').select('*').order('created_at', { ascending: false }).limit(100);
+  if (error) return [];
+  return data || [];
+}
+function planBadge(planType) {
+  const p = (planType || 'free').toLowerCase();
+  if (p === 'enterprise') return 'badge-enterprise';
+  if (p === 'pro+') return 'badge-proplus';
+  if (p === 'pro') return 'badge-pro';
+  return 'badge-free';
+}
+function planLabel(planType, expiresAt) {
+  const p = planType || 'free';
+  if (p !== 'free' && p) return p;
+  if (expiresAt && new Date(expiresAt) > new Date()) return 'Pro';
+  if (expiresAt) return 'Expired';
+  return 'Free';
+}
+window.AdminApi = {
+  initSupabase, fetchAllBusinesses, fetchStats, assignPlanTier, deleteAccount,
+  fetchAdConfig, fetchAiConfig, fetchOtpPolicy, fetchTrialConfig,
+  fetchReferralConfig, saveReferralConfig, fetchReferralCodes, fetchReferralRedemptions,
+  setReferralCodeActive, createReferralForPhone,
+  fetchYoutubeLinks,
+  saveYoutubeLinks, setAppConfig, fetchNotifications, createNotification, updateNotification,
+  deleteNotification, fetchPendingSubs, approvePendingSub, fetchGooglePlayPurchases,
+  businessIdsForPhone, planBadge, planLabel, TABLE_LABELS, YT_KEYS,
+  YT_LABELS: {
+    dashboard: 'Dashboard', khata: 'Khata', stock: 'Stock', sales: 'Sales',
+    new_sale: 'New Sale', expenses: 'Expenses', reports: 'Reports',
+    due_list: 'Due List', customer: 'Customer', business_setup: 'Business Setup', reminders: 'Reminders',
+  },
+};
+
+/* ===== APP ===== */
+let businesses = [];
+let searchQuery = '';
+let currentSection = 'dashboard';
+function $(id) { return document.getElementById(id); }
+function toast(msg, isErr = false) {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.style.borderColor = isErr ? '#ef4444' : '#22c55e';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+function showScreen(name) {
+  $('auth-screen').classList.toggle('hidden', name !== 'auth');
+  $('setup-screen').classList.toggle('hidden', name !== 'setup');
+  $('app-screen').classList.toggle('hidden', name !== 'app');
+}
+function initSupabaseFromAuth() {
+  const a = AdminAuth.getAuth();
+  AdminApi.initSupabase(a.url, a.anonKey);
+}
+async function boot() {
+  if (AdminAuth.isLocked()) {
+    const lock = AdminAuth.isLocked();
+    $('login-err').textContent = `Locked — ${Math.ceil((lock.until - Date.now()) / 60000)} min wait.`;
+  }
+  if (!AdminAuth.getAuth()?.pinHash) { showScreen('setup'); return; }
+  if (!AdminAuth.isSessionValid()) { showScreen('auth'); return; }
+  initSupabaseFromAuth();
+  showScreen('app');
+  await refreshAll();
+}
+async function refreshAll() {
+  AdminAuth.touchSession();
+  try {
+    const [stats, biz] = await Promise.all([AdminApi.fetchStats(), AdminApi.fetchAllBusinesses()]);
+    businesses = biz;
+    renderStats(stats);
+    renderUsers();
+    await loadSectionPanels();
+  } catch (e) {
+    toast(e.message || 'Load fail', true);
+  }
+}
+function renderStats(s) {
+  $('stat-total').textContent = s.totalUsers;
+  $('stat-pro').textContent = s.proUsers;
+  $('stat-free').textContent = s.freeUsers;
+}
+function filteredBusinesses() {
+  const q = searchQuery.trim().toLowerCase();
+  if (!q) return businesses;
+  return businesses.filter((b) =>
+    (b.phone || '').toLowerCase().includes(q) ||
+    (b.name || '').toLowerCase().includes(q) ||
+    (b.type || '').toLowerCase().includes(q) ||
+    (b.id || '').toLowerCase().includes(q));
+}
+function groupByPhone(list) {
+  const map = new Map();
+  for (const b of list) {
+    const ph = (b.phone || 'unknown').replace(/\D/g, '') || 'unknown';
+    if (!map.has(ph)) map.set(ph, []);
+    map.get(ph).push(b);
+  }
+  return [...map.entries()].sort((a, b) => b[1].length - a[1].length);
+}
+function renderUsers() {
+  const tbody = $('users-tbody');
+  if (!tbody) return;
+  const groups = groupByPhone(filteredBusinesses());
+  tbody.innerHTML = groups.map(([phone, rows]) => {
+    const main = rows[0];
+    const badge = AdminApi.planBadge(main.plan_type);
+    const label = AdminApi.planLabel(main.plan_type, main.pro_expires_at);
+    const total = rows.reduce((s, r) => s + (r.totalEntries || 0), 0);
+    return `<tr data-phone="${phone}">
+      <td><strong>${main.phone || '—'}</strong><br><span class="muted">${rows.length} karobar</span></td>
+      <td>${main.name || '—'}</td>
+      <td><span class="badge ${badge}">${label}</span></td>
+      <td>${total}</td>
+      <td><button class="btn btn-ghost btn-sm" data-action="manage" data-phone="${phone}">Manage</button></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="5">Koi user nahi</td></tr>';
+}
+async function loadSectionPanels() {
+  if (currentSection === 'ads') await loadAds();
+  if (currentSection === 'ai') await loadAi();
+  if (currentSection === 'otp') await loadOtp();
+  if (currentSection === 'trial') await loadTrial();
+  if (currentSection === 'referrals') await loadReferrals();
+  if (currentSection === 'youtube') await loadYoutube();
+  if (currentSection === 'notifications') await loadNotifications();
+  if (currentSection === 'pending') await loadPending();
+  if (currentSection === 'play') await loadPlay();
+}
+async function loadAds() {
+  const c = await AdminApi.fetchAdConfig();
+  $('ads-enabled').checked = c.enabled;
+  $('ads-link').value = c.link;
+  $('ads-title').value = c.title;
+  $('ads-desc').value = c.description;
+}
+async function loadAi() {
+  const c = await AdminApi.fetchAiConfig();
+  $('ai-enabled').checked = c.enabled;
+  $('ai-provider').value = c.provider;
+  $('ai-model').value = c.model;
+  $('ai-key').value = c.apiKey;
+  $('ai-free-limit').checked = c.freeLimited;
+  $('ai-daily').value = c.freeDailyLimit;
+  $('ai-pro-full').checked = c.proFullAccess;
+}
+async function loadOtp() { $('otp-enabled').checked = await AdminApi.fetchOtpPolicy(); }
+async function loadTrial() {
+  const c = await AdminApi.fetchTrialConfig();
+  $('trial-active').checked = c.active;
+  $('trial-hours').value = c.hours;
+  $('trial-audience').value = c.audience;
+  $('trial-started').textContent = c.startedAt ? `Started: ${c.startedAt}` : 'Not started yet';
+}
+async function loadReferrals() {
+  const cfg = await AdminApi.fetchReferralConfig();
+  $('referral-enabled').checked = cfg.enabled;
+  const codes = await AdminApi.fetchReferralCodes();
+  $('referral-code-count').textContent = `(${codes.length})`;
+  $('referral-codes-tbody').innerHTML = codes.map((c) => `
+    <tr>
+      <td><strong>${c.code}</strong></td>
+      <td>${c.referrer_phone || c.business?.phone || '—'}</td>
+      <td>${c.business?.name || c.business_id?.slice(0, 8) || '—'}</td>
+      <td>${c.uses}</td>
+      <td><span class="badge ${c.is_active ? 'badge-pro' : 'badge-free'}">${c.is_active ? 'Active' : 'Off'}</span></td>
+      <td><button class="btn btn-ghost btn-sm" data-ref-toggle="${c.code}" data-ref-active="${c.is_active}">${c.is_active ? 'Band' : 'ON'}</button></td>
+    </tr>`).join('') || '<tr><td colspan="6">Abhi koi code nahi — app khulegi to banenge</td></tr>';
+  const reds = await AdminApi.fetchReferralRedemptions();
+  $('referral-redemptions-tbody').innerHTML = reds.map((r) => `
+    <tr>
+      <td>${r.code}</td>
+      <td>${r.redeemer_phone || '—'}</td>
+      <td>${r.reward_days || 5}</td>
+      <td>${r.redeemed_at ? new Date(r.redeemed_at).toLocaleString() : '—'}</td>
+    </tr>`).join('') || '<tr><td colspan="4">Koi redemption nahi</td></tr>';
+}
+async function loadYoutube() {
+  const links = await AdminApi.fetchYoutubeLinks();
+  const box = $('youtube-fields');
+  box.innerHTML = AdminApi.YT_KEYS.map((k) => `
+    <div class="field">
+      <label>${AdminApi.YT_LABELS[k]}</label>
+      <input type="url" data-yt="${k}" value="${links[k] || ''}" placeholder="https://youtube.com/..." />
+    </div>`).join('');
+}
+async function loadNotifications() {
+  const rows = await AdminApi.fetchNotifications();
+  $('notif-list').innerHTML = rows.map((n) => `
+    <div class="panel" style="padding:12px">
+      <strong>${n.title}</strong>
+      <span class="badge ${n.is_active ? 'badge-pro' : 'badge-free'}">${n.is_active ? 'Active' : 'Off'}</span>
+      <p style="margin:8px 0;font-size:0.85rem;color:var(--muted)">${n.message}</p>
+      <button class="btn btn-ghost btn-sm" data-notif-edit="${n.id}">Edit</button>
+      <button class="btn btn-danger btn-sm" data-notif-del="${n.id}">Delete</button>
+    </div>`).join('') || '<p class="muted">Koi notification nahi</p>';
+}
+async function loadPending() {
+  const rows = await AdminApi.fetchPendingSubs();
+  $('pending-tbody').innerHTML = rows.map((r) => `
+    <tr>
+      <td>${r.phone_number}</td>
+      <td>${r.package_type}</td>
+      <td>${r.trx_id}</td>
+      <td>${new Date(r.created_at).toLocaleString()}</td>
+      <td><button class="btn btn-primary btn-sm" data-pending-approve="${r.id}">Approve Pro</button></td>
+    </tr>`).join('') || '<tr><td colspan="5">Koi pending nahi</td></tr>';
+  window._pendingRows = rows;
+}
+async function loadPlay() {
+  const rows = await AdminApi.fetchGooglePlayPurchases();
+  $('play-tbody').innerHTML = rows.map((r) => `
+    <tr>
+      <td>${r.phone_number || '—'}</td>
+      <td>${r.plan_type || '—'}</td>
+      <td>${r.product_id || '—'}</td>
+      <td>${r.expires_at ? new Date(r.expires_at).toLocaleDateString() : '—'}</td>
+    </tr>`).join('') || '<tr><td colspan="4">Koi purchase nahi</td></tr>';
+}
+function showSection(id) {
+  currentSection = id;
+  document.querySelectorAll('[data-section]').forEach((el) => { el.classList.toggle('hidden', el.dataset.section !== id); });
+  document.querySelectorAll('.nav button').forEach((btn) => { btn.classList.toggle('active', btn.dataset.nav === id); });
+  loadSectionPanels();
+  $('sidebar')?.classList.remove('open');
+}
+function openUserModal(phone) {
+  const rows = businesses.filter((b) => (b.phone || '').replace(/\D/g, '') === phone);
+  if (!rows.length) return;
+  const main = rows[0];
+  $('modal-title').textContent = `Manage: ${main.phone}`;
+  $('modal-body').innerHTML = `
+    <p><strong>${rows.length}</strong> karobar is phone par</p>
+    <ul style="font-size:0.85rem;color:var(--muted)">
+      ${rows.map((r) => `<li>${r.name} (${r.type}) — ${AdminApi.planLabel(r.plan_type, r.pro_expires_at)}</li>`).join('')}
+    </ul>
+    <div class="field"><label>Plan</label>
+      <select id="m-tier">
+        <option value="pro">Pro</option>
+        <option value="proplus">Pro+</option>
+        <option value="enterprise">Enterprise</option>
+        <option value="free">Free / Revoke</option>
+      </select>
+    </div>
+    <div class="field"><label>Months</label>
+      <select id="m-months">
+        <option value="1">1 month</option>
+        <option value="3">3 months</option>
+        <option value="6">6 months</option>
+        <option value="12">12 months</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="m-assign">Assign Plan</button>
+      <button class="btn btn-danger" id="m-delete">Delete Account</button>
+      <button class="btn btn-ghost" id="m-close">Close</button>
+    </div>`;
+  $('modal-overlay').classList.remove('hidden');
+  $('m-close').onclick = () => $('modal-overlay').classList.add('hidden');
+  $('m-assign').onclick = async () => {
+    const tier = $('m-tier').value;
+    const months = parseInt($('m-months').value, 10);
+    const exp = new Date();
+    if (tier === 'free') {
+      await AdminApi.assignPlanTier(main.phone, 'free', exp);
+    } else {
+      exp.setMonth(exp.getMonth() + months);
+      await AdminApi.assignPlanTier(main.phone, tier, exp);
+    }
+    toast('Plan updated');
+    $('modal-overlay').classList.add('hidden');
+    await refreshAll();
+  };
+  $('m-delete').onclick = async () => {
+    const pin = prompt('Confirm delete — Admin PIN:');
+    if (!pin || !(await AdminAuth.verifyPin(pin))) { toast('Galat PIN', true); return; }
+    if (!confirm('POORA account cloud se delete? Undo nahi hoga.')) return;
+    await AdminApi.deleteAccount(main.id, main.phone);
+    toast('Account deleted');
+    $('modal-overlay').classList.add('hidden');
+    await refreshAll();
+  };
+}
+document.addEventListener('DOMContentLoaded', () => {
+  $('setup-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      await AdminAuth.setupAdmin($('setup-url').value, $('setup-key').value, $('setup-pin').value);
+      initSupabaseFromAuth();
+      showScreen('app');
+      await refreshAll();
+      toast('Setup complete');
+    } catch (err) { $('setup-err').textContent = err.message; }
+  });
+  $('login-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      await AdminAuth.loginPin($('login-pin').value);
+      initSupabaseFromAuth();
+      showScreen('app');
+      await refreshAll();
+    } catch (err) { $('login-err').textContent = err.message; }
+  });
+  $('btn-logout')?.addEventListener('click', () => { AdminAuth.logout(); showScreen('auth'); });
+  $('btn-refresh')?.addEventListener('click', () => refreshAll());
+  $('global-search')?.addEventListener('input', (e) => { searchQuery = e.target.value; renderUsers(); });
+  document.querySelectorAll('.nav button').forEach((btn) => { btn.addEventListener('click', () => showSection(btn.dataset.nav)); });
+  $('menu-toggle')?.addEventListener('click', () => { $('sidebar').classList.toggle('open'); });
+  $('users-tbody')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-action="manage"]');
+    if (btn) openUserModal(btn.dataset.phone);
+  });
+  $('save-ads')?.addEventListener('click', async () => {
+    await AdminApi.setAppConfig({ ads_enabled: $('ads-enabled').checked, ads_link: $('ads-link').value, ads_title: $('ads-title').value, ads_description: $('ads-desc').value });
+    toast('Ads saved');
+  });
+  $('save-ai')?.addEventListener('click', async () => {
+    await AdminApi.setAppConfig({
+      ai_enabled: $('ai-enabled').checked, ai_provider: $('ai-provider').value, ai_model: $('ai-model').value,
+      ai_api_key: $('ai-key').value, ai_free_limited_access: $('ai-free-limit').checked,
+      ai_free_daily_limit: $('ai-daily').value, ai_pro_full_access: $('ai-pro-full').checked,
+    });
+    toast('AI config saved');
+  });
+  $('save-otp')?.addEventListener('click', async () => {
+    await AdminApi.setAppConfig({ otp_verification_enabled: $('otp-enabled').checked });
+    toast('OTP policy saved');
+  });
+  $('save-trial')?.addEventListener('click', async () => {
+    const active = $('trial-active').checked;
+    const entries = { trial_campaign_active: active, trial_duration_hours: $('trial-hours').value, trial_target_audience: $('trial-audience').value };
+    if (active) entries.trial_campaign_started_at = new Date().toISOString();
+    await AdminApi.setAppConfig(entries);
+    toast('Trial campaign saved');
+    await loadTrial();
+  });
+  $('save-referral-config')?.addEventListener('click', async () => {
+    await AdminApi.saveReferralConfig($('referral-enabled').checked);
+    toast('Referral program saved');
+  });
+  $('referral-create-btn')?.addEventListener('click', async () => {
+    const phone = $('referral-phone').value.trim();
+    if (!phone) return toast('Phone zaroori', true);
+    try {
+      const code = await AdminApi.createReferralForPhone(phone, $('referral-custom-code').value);
+      toast(`Code ready: ${code}`);
+      await loadReferrals();
+    } catch (e) { toast(e.message || 'Fail', true); }
+  });
+  $('referral-codes-tbody')?.addEventListener('click', async (e) => {
+    const code = e.target.dataset.refToggle;
+    if (!code) return;
+    const active = e.target.dataset.refActive === 'true';
+    await AdminApi.setReferralCodeActive(code, !active);
+    toast(active ? 'Code band' : 'Code ON');
+    await loadReferrals();
+  });
+  $('save-youtube')?.addEventListener('click', async () => {
+    const links = {};
+    document.querySelectorAll('[data-yt]').forEach((inp) => { links[inp.dataset.yt] = inp.value; });
+    await AdminApi.saveYoutubeLinks(links);
+    toast('YouTube links saved');
+  });
+  $('add-notif')?.addEventListener('click', async () => {
+    const title = $('notif-title').value.trim();
+    const message = $('notif-msg').value.trim();
+    if (!title || !message) return toast('Title + message zaroori', true);
+    await AdminApi.createNotification(title, message);
+    $('notif-title').value = '';
+    $('notif-msg').value = '';
+    await loadNotifications();
+    toast('Notification created');
+  });
+  $('pending-tbody')?.addEventListener('click', async (e) => {
+    const id = e.target.dataset.pendingApprove;
+    if (!id) return;
+    const row = (window._pendingRows || []).find((r) => r.id === id);
+    if (!row) return;
+    await AdminApi.approvePendingSub(row);
+    toast('Approved');
+    await loadPending();
+    await refreshAll();
+  });
+  $('notif-list')?.addEventListener('click', async (e) => {
+    const delId = e.target.dataset.notifDel;
+    if (delId) {
+      if (!confirm('Delete notification?')) return;
+      await AdminApi.deleteNotification(delId);
+      await loadNotifications();
+      toast('Deleted');
+    }
+  });
+  if ($('setup-url') && !$('setup-url').value) {
+    $('setup-url').value = 'https://cwbfmjplmusscpjcngcm.supabase.co';
+  }
+  boot();
+});
+  </script>
 </body>
 </html>
